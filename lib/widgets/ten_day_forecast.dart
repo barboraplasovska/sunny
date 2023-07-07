@@ -20,18 +20,22 @@ class TenDayForecast extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(10),
+          Padding(
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
-                Icon(Icons.calendar_month_outlined),
-                SizedBox(
+                Icon(
+                  Icons.calendar_month_outlined,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                const SizedBox(
                   width: 10,
                 ),
                 Text(
                   "10-day forecast",
                   style: TextStyle(
                     fontSize: 20,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],
@@ -42,7 +46,9 @@ class TenDayForecast extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             itemCount: dayForecast.length,
-            separatorBuilder: (context, index) => const Divider(),
+            separatorBuilder: (context, index) => Divider(
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
             itemBuilder: (context, index) {
               final day = dayForecast[index];
 
@@ -74,7 +80,10 @@ class TenDayForecast extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: Text(
-                        '${day.day.minTempC.toString()}°C-${day.day.maxTempC.toString()}°C',
+                        '${day.day.minTempC.toString()}°C - ${day.day.maxTempC.toString()}°C',
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ],

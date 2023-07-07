@@ -22,18 +22,22 @@ class HourlyForecastWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(10),
+          Padding(
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
-                Icon(Icons.access_time),
-                SizedBox(
+                Icon(
+                  Icons.access_time,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                const SizedBox(
                   width: 10,
                 ),
                 Text(
                   "Hourly forecast",
                   style: TextStyle(
                     fontSize: 20,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],

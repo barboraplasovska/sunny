@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:sunny/models/weather_model.dart';
 import 'package:sunny/pages/weather_detail/weather_detail_page.dart';
+import 'package:sunny/services/shared_prefs_service.dart';
 import 'package:sunny/services/weather_service.dart';
 import 'package:sunny/widgets/add_city_popup.dart';
 
@@ -22,8 +23,16 @@ class _HomePageState extends State<HomePage> {
 
   final PageController _pageController = PageController();
 
+  Future<void> fetchCities() async {
+    List<String> newCities = await getSavedCities();
+    setState(() {
+      cities = newCities;
+    });
+  }
+
   @override
   void initState() {
+    fetchCities();
     super.initState();
   }
 
@@ -99,70 +108,83 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         alignment: Alignment.centerRight,
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: cities.length,
-                  itemBuilder: (context, index) {
-                    final city = cities[index];
+          Container(
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: cities.length,
+                    itemBuilder: (context, index) {
+                      final city = cities[index];
 
-                    if (shouldFetchData(city)) {
-                      return buildBody(city, index);
-                    } else {
-                      final weatherModel = cachedWeatherData[city];
-
-                      if (weatherModel != null) {
-                        return WeatherDetail(model: weatherModel);
+                      if (shouldFetchData(city)) {
+                        return buildBody(city, index);
                       } else {
-                        return const Center(
-                          child: Text('No weather data available'),
-                        );
+                        final weatherModel = cachedWeatherData[city];
+
+                        if (weatherModel != null) {
+                          return WeatherDetail(model: weatherModel);
+                        } else {
+                          return const Center(
+                            child: Text('No weather data available'),
+                          );
+                        }
                       }
-                    }
-                  },
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: PageViewDotIndicator(
-                    currentItem: _currentIndex,
-                    count: cities.length,
-                    unselectedColor: Colors.grey,
-                    selectedColor: Colors.blue,
+                    },
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  height: 60,
+                  color: Theme.of(context).colorScheme.background,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 30),
+                    child: PageViewDotIndicator(
+                      currentItem: _currentIndex,
+                      count: cities.length,
+                      unselectedColor: Colors.grey,
+                      selectedColor: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Positioned(
-            right: 2,
+            right: 4,
             top: 55,
             child: IconButton(
               splashRadius: 20,
+              color: Theme.of(context).colorScheme.tertiary,
               onPressed: () {
                 setState(() {
                   showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const AddCityPopup();
-                      });
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const AddCityPopup();
+                          })
+                      .then((value) => {
+                            fetchCities(),
+                          })
+                      .whenComplete(
+                        () => setState(() {
+                          _currentIndex = cities.length - 1;
+                        }),
+                      );
                 });
               },
               icon: const Icon(
                 Icons.add,
-                size: 25,
+                size: 35,
               ),
             ),
           ),
