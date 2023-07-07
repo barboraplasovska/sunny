@@ -151,6 +151,8 @@ class _HomePageState extends State<HomePage> {
                     child: PageViewDotIndicator(
                       currentItem: _currentIndex,
                       count: cities.length,
+                      size: const Size(8, 8),
+                      unselectedSize: const Size(8, 8),
                       unselectedColor: Colors.grey,
                       selectedColor: Theme.of(context).colorScheme.tertiary,
                     ),

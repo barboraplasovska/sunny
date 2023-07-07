@@ -9,11 +9,14 @@ class AddCityPopup extends StatefulWidget {
 }
 
 class _AddCityPopupState extends State<AddCityPopup> {
-  TextEditingController _cityController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       title: const Text('Add a City'),
       content: TextField(
         controller: _cityController,
@@ -22,12 +25,21 @@ class _AddCityPopupState extends State<AddCityPopup> {
         ),
       ),
       actions: [
-        TextButton(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+          ),
           onPressed: () async => {
             await addCity(_cityController.text),
             Navigator.of(context).pop(),
           },
-          child: const Text('OK'),
+          child: Text(
+            'OK',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onTertiary,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
         ),
       ],
     );
