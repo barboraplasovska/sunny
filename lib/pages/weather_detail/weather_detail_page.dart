@@ -35,7 +35,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
     for (HourlyModel hourlyModel in forecasts[1].hourlyForecast) {
       int forecastHour = getHour(hourlyModel.time);
 
-      if (forecastHour <= currentHour) {
+      if (forecastHour < currentHour) {
         hourlyForecast.add(hourlyModel);
       }
     }
