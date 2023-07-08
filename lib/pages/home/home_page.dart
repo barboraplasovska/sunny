@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:sunny/models/weather_model.dart';
+import 'package:sunny/pages/location_list/location_list_page.dart';
 import 'package:sunny/pages/weather_detail/weather_detail_page.dart';
 import 'package:sunny/services/shared_prefs_service.dart';
 import 'package:sunny/services/weather_service.dart';
 import 'package:sunny/widgets/add_city_popup.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? city;
+  const HomePage({
+    super.key,
+    this.city,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,6 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchCities() async {
     List<String> newCities = await getSavedCities();
+
     setState(() {
       cities = newCities;
     });
@@ -34,6 +40,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     fetchCities();
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final selectedCity = widget.city;
+      if (selectedCity != null) {
+        final selectedIndex = cities.indexOf(selectedCity);
+        if (selectedIndex != -1) {
+          setState(() {
+            _currentIndex = selectedIndex;
+          });
+          _pageController.jumpToPage(selectedIndex);
+        }
+      }
+    });
   }
 
   @override
@@ -107,6 +125,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final String selectedCity = widget.city ?? "";
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
@@ -168,24 +188,17 @@ class _HomePageState extends State<HomePage> {
               splashRadius: 20,
               color: Theme.of(context).colorScheme.tertiary,
               onPressed: () {
-                setState(() {
-                  showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const AddCityPopup();
-                          })
-                      .then((value) => {
-                            fetchCities(),
-                          })
-                      .whenComplete(
-                        () => setState(() {
-                          _currentIndex = cities.length - 1;
-                        }),
-                      );
-                });
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: Duration.zero,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const LocationListPage(),
+                  ),
+                );
               },
               icon: const Icon(
-                Icons.add,
+                Icons.menu,
                 size: 35,
               ),
             ),
