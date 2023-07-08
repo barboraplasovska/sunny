@@ -1,9 +1,15 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunny/services/geolocator_service.dart';
 
 Future<List<String>> getSavedCities() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String>? path = prefs.getStringList('cities');
-  return path ?? ["Paris", "London"];
+  List<String>? cities = prefs.getStringList('cities');
+
+  if (cities == null) {
+    String longLat = await getLongLangFromPosition();
+    cities = [longLat];
+  }
+  return cities;
 }
 
 bool includesCity(List<String> cities, String city) {
