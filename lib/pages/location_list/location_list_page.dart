@@ -28,7 +28,7 @@ class _LocationListPageState extends State<LocationListPage> {
     return weatherModel;
   }
 
-  Widget buildTile(WeatherModel model) {
+  Widget buildTile(WeatherModel model, bool currentLocation) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Container(
@@ -45,12 +45,20 @@ class _LocationListPageState extends State<LocationListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model.location.name,
+                    currentLocation ? "My location" : model.location.name,
                     style: const TextStyle(
-                      fontSize: 30,
+                      fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  currentLocation
+                      ? Text(
+                          model.location.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      : Container(),
                   const Spacer(),
                   Text(
                     model.condition.text,
@@ -67,7 +75,7 @@ class _LocationListPageState extends State<LocationListPage> {
                   Text(
                     '${model.tempC}°',
                     style: const TextStyle(
-                      fontSize: 50,
+                      fontSize: 35,
                     ),
                   ),
                   Text(
@@ -85,7 +93,7 @@ class _LocationListPageState extends State<LocationListPage> {
     );
   }
 
-  Widget buildFutureTile(String city) {
+  Widget buildFutureTile(String city, {bool currentLocation = false}) {
     return FutureBuilder<WeatherModel?>(
       future: fetchWeatherData(city),
       builder: (context, snapshot) {
@@ -101,7 +109,7 @@ class _LocationListPageState extends State<LocationListPage> {
           WeatherModel? weatherModel = snapshot.data;
 
           if (weatherModel != null) {
-            return buildTile(weatherModel);
+            return buildTile(weatherModel, currentLocation);
           } else {
             return const Center(
               child: Text('No weather data available'),
@@ -180,30 +188,32 @@ class _LocationListPageState extends State<LocationListPage> {
                     onTap: () {
                       navigateToCityDetail(context, cities[index]);
                     },
-                    child: Dismissible(
-                      direction: DismissDirection.endToStart,
-                      key: Key(item),
-                      onDismissed: (direction) async {
-                        await removeCityAt(index);
-                        setState(() {
-                          cities.removeAt(index);
-                        });
-                      },
-                      background: Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Container(
-                          color: Colors.red,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 30),
-                          child: const Icon(
-                            Icons.delete_outlined,
-                            color: Colors.white,
-                            size: 50,
+                    child: index == 0
+                        ? buildFutureTile(cities[index], currentLocation: true)
+                        : Dismissible(
+                            direction: DismissDirection.endToStart,
+                            key: Key(item),
+                            onDismissed: (direction) async {
+                              await removeCityAt(index);
+                              setState(() {
+                                cities.removeAt(index);
+                              });
+                            },
+                            background: Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 30),
+                                child: const Icon(
+                                  Icons.delete_outlined,
+                                  color: Colors.white,
+                                  size: 50,
+                                ),
+                              ),
+                            ),
+                            child: buildFutureTile(cities[index]),
                           ),
-                        ),
-                      ),
-                      child: buildFutureTile(cities[index]),
-                    ),
                   );
                 },
               ),

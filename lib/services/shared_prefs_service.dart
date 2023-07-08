@@ -26,11 +26,21 @@ Future<void> addCity(String city) async {
   }
 }
 
-Future<void> removeCityAt(index) async {
+Future<void> removeCityAt(int index) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   List<String> current = await getSavedCities();
   current.removeAt(index);
 
+  await prefs.setStringList('cities', current);
+}
+
+Future<void> setLocationCity(String city) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  List<String> current = await getSavedCities();
+
+  current.insert(0, city);
+  current.removeAt(1);
   await prefs.setStringList('cities', current);
 }
