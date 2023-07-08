@@ -7,7 +7,7 @@ Features include hourly temperature for the next 24 hours and daily highest and
 lowest temperatures for the next 10 days.
 
 ## Description
-Time spent: 8 hours
+Time spent: 9 hours
 
 ### Libraries
 I used the following libraries.
