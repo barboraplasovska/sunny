@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:sunny/models/weather_model.dart';
+import 'package:sunny/pages/location_list/location_list_page.dart';
 import 'package:sunny/pages/weather_detail/weather_detail_page.dart';
-import 'package:sunny/services/shared_prefs_service.dart';
 import 'package:sunny/services/weather_service.dart';
-import 'package:sunny/widgets/add_city_popup.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? city;
+  final List<String> cities;
+  const HomePage({
+    super.key,
+    this.city,
+    required this.cities,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -15,7 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final WeatherService _weatherService = WeatherService();
-  List<String> cities = ["Paris", "London"];
+  late List<String> cities;
 
   int _currentIndex = 0;
   Map<String, WeatherModel?> cachedWeatherData = {};
@@ -23,17 +28,22 @@ class _HomePageState extends State<HomePage> {
 
   final PageController _pageController = PageController();
 
-  Future<void> fetchCities() async {
-    List<String> newCities = await getSavedCities();
-    setState(() {
-      cities = newCities;
-    });
-  }
-
   @override
   void initState() {
-    fetchCities();
+    cities = widget.cities;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final selectedCity = widget.city;
+      if (selectedCity != null) {
+        final selectedIndex = cities.indexOf(selectedCity);
+        if (selectedIndex != -1) {
+          setState(() {
+            _currentIndex = selectedIndex;
+          });
+          _pageController.jumpToPage(selectedIndex);
+        }
+      }
+    });
   }
 
   @override
@@ -112,80 +122,71 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         alignment: Alignment.centerRight,
         children: [
-          Container(
-            child: Column(
-              children: [
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: cities.length,
-                    itemBuilder: (context, index) {
-                      final city = cities[index];
+          Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: cities.length,
+                  itemBuilder: (context, index) {
+                    final city = cities[index];
 
-                      if (shouldFetchData(city)) {
-                        return buildBody(city, index);
+                    if (shouldFetchData(city)) {
+                      return buildBody(city, index);
+                    } else {
+                      final weatherModel = cachedWeatherData[city];
+
+                      if (weatherModel != null) {
+                        return WeatherDetail(model: weatherModel);
                       } else {
-                        final weatherModel = cachedWeatherData[city];
-
-                        if (weatherModel != null) {
-                          return WeatherDetail(model: weatherModel);
-                        } else {
-                          return const Center(
-                            child: Text('No weather data available'),
-                          );
-                        }
+                        return const Center(
+                          child: Text('No weather data available'),
+                        );
                       }
-                    },
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
+                    }
+                  },
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                ),
+              ),
+              Container(
+                height: 60,
+                color: Theme.of(context).colorScheme.background,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: PageViewDotIndicator(
+                    currentItem: _currentIndex,
+                    count: cities.length,
+                    size: const Size(8, 8),
+                    unselectedSize: const Size(8, 8),
+                    unselectedColor: Colors.grey,
+                    selectedColor: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
-                Container(
-                  height: 60,
-                  color: Theme.of(context).colorScheme.background,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: PageViewDotIndicator(
-                      currentItem: _currentIndex,
-                      count: cities.length,
-                      size: const Size(8, 8),
-                      unselectedSize: const Size(8, 8),
-                      unselectedColor: Colors.grey,
-                      selectedColor: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           Positioned(
-            right: 4,
-            top: 55,
+            right: 12,
+            bottom: 23,
             child: IconButton(
               splashRadius: 20,
               color: Theme.of(context).colorScheme.tertiary,
               onPressed: () {
-                setState(() {
-                  showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const AddCityPopup();
-                          })
-                      .then((value) => {
-                            fetchCities(),
-                          })
-                      .whenComplete(
-                        () => setState(() {
-                          _currentIndex = cities.length - 1;
-                        }),
-                      );
-                });
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: Duration.zero,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const LocationListPage(),
+                  ),
+                );
               },
               icon: const Icon(
-                Icons.add,
+                Icons.menu,
                 size: 35,
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sunny/pages/home/home_page.dart';
+import 'package:sunny/pages/home/fetch_cities.dart';
 import 'package:sunny/styles/theme.dart';
 
 void main() async {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sunny',
       theme: sunnyTheme,
-      home: const HomePage(),
+      home: const FetchCities(),
     );
   }
 }
