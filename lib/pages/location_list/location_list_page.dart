@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sunny/models/weather_model.dart';
-import 'package:sunny/pages/home/home_page.dart';
+import 'package:sunny/pages/home/fetch_cities.dart';
 import 'package:sunny/services/shared_prefs_service.dart';
 import 'package:sunny/services/weather_service.dart';
 import 'package:sunny/widgets/add_city_popup.dart';
@@ -112,6 +112,28 @@ class _LocationListPageState extends State<LocationListPage> {
     );
   }
 
+  void navigateToCityDetail(BuildContext context, city) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(microseconds: 500000),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            FetchCities(city: city),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return ScaleTransition(
+            scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.fastOutSlowIn,
+              ),
+            ),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
   Widget buildPage() {
     return Scaffold(
       body: Padding(
@@ -156,29 +178,7 @@ class _LocationListPageState extends State<LocationListPage> {
                   final item = cities[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          transitionDuration:
-                              const Duration(microseconds: 500000),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  HomePage(city: cities[index]),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return ScaleTransition(
-                              scale:
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                CurvedAnimation(
-                                  parent: animation,
-                                  curve: Curves.fastOutSlowIn,
-                                ),
-                              ),
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
+                      navigateToCityDetail(context, cities[index]);
                     },
                     child: Dismissible(
                       direction: DismissDirection.endToStart,
