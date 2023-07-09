@@ -3,11 +3,12 @@
 Sunny is a simple weather application. By default, it asks the user permission
 for his current location to show the Weather at his current position. The user can
 add other places and delete them as he likes.
-Features include hourly temperature for the next 24 hours and daily highest and
-lowest temperatures for the next 10 days.
+Features include hourly temperature for the next 24 hours, daily highest and
+lowest temperatures for the next 10 days, as well as feel like temperature,
+humidity, wind direction and speed and visibility.
 
 ## Description
-Time spent: 9 hours
+Time spent: 10 hours
 
 ### Libraries
 I used the following libraries.

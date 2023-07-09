@@ -124,7 +124,7 @@ class _LocationListPageState extends State<LocationListPage> {
   }
 
   void navigateToCityDetail(BuildContext context, city) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(microseconds: 500000),

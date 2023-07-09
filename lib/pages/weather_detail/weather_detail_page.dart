@@ -11,6 +11,7 @@ import 'package:sunny/widgets/weather_widget.dart';
 
 class WeatherDetail extends StatefulWidget {
   final WeatherModel model;
+
   const WeatherDetail({
     super.key,
     required this.model,
@@ -45,17 +46,17 @@ class _WeatherDetailState extends State<WeatherDetail> {
   }
 
   String getVisibilityDescription(int visibility) {
-    if (visibility >= 10) return 'It\'s perfectly clear right now';
+    if (visibility >= 10) return 'It\'s perfectly clear right now.';
     if (visibility >= 1) return 'Reduced visibility.';
-    return 'Visibility is severely impaired';
+    return 'Visibility is severely impaired.';
   }
 
   String getFeelsLikeDescription(WeatherModel model) {
     if (model.humidity >= 50 && model.feelslikeC >= model.tempC) {
-      return 'Humidity is making it weel warmer';
+      return 'Humidity is making it feel warmer.';
     }
     if (model.feelslikeC <= model.tempC && model.windKph >= 10) {
-      return 'Wind is making it feel cooler';
+      return 'Wind is making it feel cooler.';
     }
     return "Similar to actual temperature.";
   }
@@ -63,23 +64,23 @@ class _WeatherDetailState extends State<WeatherDetail> {
   String getWindDescription(String direction) {
     switch (direction) {
       case 'N':
-        return 'The wind is coming from the north';
+        return 'The wind is coming from the north.';
       case 'NE':
-        return 'The wind is coming from the northeast';
+        return 'The wind is coming from the northeast.';
       case 'E':
-        return 'The wind is coming from the east';
+        return 'The wind is coming from the east.';
       case 'SE':
-        return 'The wind is coming from the southeast';
+        return 'The wind is coming from the southeast.';
       case 'S':
-        return 'The wind is coming from the south';
+        return 'The wind is coming from the south.';
       case 'SW':
-        return 'The wind is coming from the southwest';
+        return 'The wind is coming from the southwest.';
       case 'W':
-        return 'The wind is coming from the west';
+        return 'The wind is coming from the west.';
       case 'NW':
-        return 'The wind is coming from the northwest';
+        return 'The wind is coming from the northwest.';
       default:
-        return 'The wind direction is unknown';
+        return 'The wind direction is unknown.';
     }
   }
 
@@ -90,90 +91,138 @@ class _WeatherDetailState extends State<WeatherDetail> {
     ConditionModel condition = model.condition;
     List<ForecastModel> forecast = model.forecast;
 
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 90),
-                child: Text(
-                  location.name,
-                  style: const TextStyle(fontSize: 30),
-                ),
-              ),
-              Text(
-                '${model.tempC}°',
-                style: const TextStyle(
-                  fontSize: 80,
-                ),
-              ),
-              Text(
-                condition.text,
-                style: const TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                'H:${forecast[0].day.maxTempC}° L:${forecast[0].day.minTempC}°',
-                style: const TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              HourlyForecastWidget(
-                hourlyForecast: getHourlyForecast(forecast),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              TenDayForecast(dayForecast: forecast),
-              SizedBox(
-                height: 320,
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  primary: false,
-                  padding: const EdgeInsets.only(top: 15),
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.2,
-                  children: <Widget>[
-                    WeatherWidget(
-                      icon: Icons.thermostat_sharp,
-                      widgetTitle: "Feels like",
-                      title: '${model.feelslikeC}°',
-                      description: getFeelsLikeDescription(model),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250.0,
+            backgroundColor: Theme.of(context).colorScheme.background,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 90),
+                    child: Text(
+                      location.name,
+                      style: const TextStyle(fontSize: 30),
                     ),
-                    WeatherWidget(
-                      icon: Icons.water_drop_outlined,
-                      widgetTitle: "Humidity",
-                      title: '${model.humidity}%',
+                  ),
+                  Text(
+                    '${model.tempC}°',
+                    style: const TextStyle(
+                      fontSize: 80,
                     ),
-                    WeatherWidget(
-                      icon: Icons.visibility,
-                      widgetTitle: "Visibility",
-                      title: '${model.visKm} km',
-                      description: getVisibilityDescription(model.visKm),
+                  ),
+                  Text(
+                    condition.text,
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
-                    WeatherWidget(
-                      icon: Icons.air,
-                      widgetTitle: "Wind",
-                      title: '${model.windKph} km/h',
-                      description: getWindDescription(model.windDir),
+                  ),
+                  Text(
+                    'H:${forecast[0].day.maxTempC}° L:${forecast[0].day.minTempC}°',
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
+            pinned: true,
           ),
-        ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: HourlyForecastWidget(
+                    hourlyForecast: getHourlyForecast(forecast),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: SizedBox(
+                    height: 340,
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      primary: false,
+                      padding: const EdgeInsets.only(top: 15),
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.2,
+                      children: <Widget>[
+                        WeatherWidget(
+                          icon: Icons.thermostat_sharp,
+                          widgetTitle: "Feels like",
+                          title: '${model.feelslikeC}°',
+                          description: getFeelsLikeDescription(model),
+                        ),
+                        WeatherWidget(
+                          icon: Icons.water_drop_outlined,
+                          widgetTitle: "Humidity",
+                          title: '${model.humidity}%',
+                        ),
+                        WeatherWidget(
+                          icon: Icons.visibility,
+                          widgetTitle: "Visibility",
+                          title: '${model.visKm} km',
+                          description: getVisibilityDescription(model.visKm),
+                        ),
+                        WeatherWidget(
+                          icon: Icons.air,
+                          widgetTitle: "Wind",
+                          title: '${model.windKph} km/h',
+                          description: getWindDescription(model.windDir),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: TenDayForecast(dayForecast: forecast),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

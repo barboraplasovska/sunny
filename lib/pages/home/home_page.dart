@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
               splashRadius: 20,
               color: Theme.of(context).colorScheme.tertiary,
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   PageRouteBuilder(
                     transitionDuration: Duration.zero,
