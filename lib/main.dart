@@ -4,6 +4,7 @@ import 'package:sunny/pages/home/fetch_cities.dart';
 import 'package:sunny/services/geolocator_service.dart';
 import 'package:sunny/services/shared_prefs_service.dart';
 import 'package:sunny/styles/theme.dart';
+import 'package:flutter/services.dart';
 
 Future<void> addCurrentLocationCity() async {
   String longLat = await getLongLangFromPosition();
@@ -13,6 +14,11 @@ Future<void> addCurrentLocationCity() async {
 void main() async {
   await dotenv.load();
   await addCurrentLocationCity();
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
