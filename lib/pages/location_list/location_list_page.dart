@@ -34,7 +34,7 @@ class _LocationListPageState extends State<LocationListPage> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary.withAlpha(200),
         ),
         height: 120,
         child: Padding(
