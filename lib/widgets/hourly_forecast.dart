@@ -29,14 +29,15 @@ class HourlyForecastWidget extends StatelessWidget {
                 Icon(
                   Icons.access_time,
                   color: Theme.of(context).colorScheme.tertiary,
+                  size: 16,
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 Text(
-                  "Hourly forecast",
+                  "HOURLY FORECAST",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),

@@ -60,10 +60,13 @@ class _LocationListPageState extends State<LocationListPage> {
                         )
                       : Container(),
                   const Spacer(),
-                  Text(
-                    model.condition.text,
-                    style: const TextStyle(
-                      fontSize: 16,
+                  SizedBox(
+                    width: 200,
+                    child: Text(
+                      model.condition.text,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],

@@ -27,14 +27,15 @@ class TenDayForecast extends StatelessWidget {
                 Icon(
                   Icons.calendar_month_outlined,
                   color: Theme.of(context).colorScheme.tertiary,
+                  size: 16,
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 Text(
-                  "10-day forecast",
+                  "10-DAY FORECAST",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
@@ -61,11 +62,13 @@ class TenDayForecast extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 10, top: 5),
                 child: Row(
                   children: [
-                    Text(
-                      isToday ? 'Today' : formattedDay,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22,
+                    Expanded(
+                      child: Text(
+                        isToday ? 'Today' : formattedDay,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 22,
+                        ),
                       ),
                     ),
                     SizedBox(

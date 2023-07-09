@@ -7,6 +7,7 @@ import 'package:sunny/models/weather_model.dart';
 import 'package:sunny/services/weather_service.dart';
 import 'package:sunny/widgets/hourly_forecast.dart';
 import 'package:sunny/widgets/ten_day_forecast.dart';
+import 'package:sunny/widgets/weather_widget.dart';
 
 class WeatherDetail extends StatefulWidget {
   final WeatherModel model;
@@ -43,6 +44,45 @@ class _WeatherDetailState extends State<WeatherDetail> {
     return hourlyForecast;
   }
 
+  String getVisibilityDescription(int visibility) {
+    if (visibility >= 10) return 'It\'s perfectly clear right now';
+    if (visibility >= 1) return 'Reduced visibility.';
+    return 'Visibility is severely impaired';
+  }
+
+  String getFeelsLikeDescription(WeatherModel model) {
+    if (model.humidity >= 50 && model.feelslikeC >= model.tempC) {
+      return 'Humidity is making it weel warmer';
+    }
+    if (model.feelslikeC <= model.tempC && model.windKph >= 10) {
+      return 'Wind is making it feel cooler';
+    }
+    return "Similar to actual temperature.";
+  }
+
+  String getWindDescription(String direction) {
+    switch (direction) {
+      case 'N':
+        return 'The wind is coming from the north';
+      case 'NE':
+        return 'The wind is coming from the northeast';
+      case 'E':
+        return 'The wind is coming from the east';
+      case 'SE':
+        return 'The wind is coming from the southeast';
+      case 'S':
+        return 'The wind is coming from the south';
+      case 'SW':
+        return 'The wind is coming from the southwest';
+      case 'W':
+        return 'The wind is coming from the west';
+      case 'NW':
+        return 'The wind is coming from the northwest';
+      default:
+        return 'The wind direction is unknown';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     WeatherModel model = widget.model;
@@ -52,7 +92,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
 
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,9 +129,47 @@ class _WeatherDetailState extends State<WeatherDetail> {
                 hourlyForecast: getHourlyForecast(forecast),
               ),
               const SizedBox(
-                height: 20,
+                height: 15,
               ),
               TenDayForecast(dayForecast: forecast),
+              SizedBox(
+                height: 320,
+                child: GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  primary: false,
+                  padding: const EdgeInsets.only(top: 15),
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.2,
+                  children: <Widget>[
+                    WeatherWidget(
+                      icon: Icons.thermostat_sharp,
+                      widgetTitle: "Feels like",
+                      title: '${model.feelslikeC}°',
+                      description: getFeelsLikeDescription(model),
+                    ),
+                    WeatherWidget(
+                      icon: Icons.water_drop_outlined,
+                      widgetTitle: "Humidity",
+                      title: '${model.humidity}%',
+                    ),
+                    WeatherWidget(
+                      icon: Icons.visibility,
+                      widgetTitle: "Visibility",
+                      title: '${model.visKm} km',
+                      description: getVisibilityDescription(model.visKm),
+                    ),
+                    WeatherWidget(
+                      icon: Icons.air,
+                      widgetTitle: "Wind",
+                      title: '${model.windKph} km/h',
+                      description: getWindDescription(model.windDir),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

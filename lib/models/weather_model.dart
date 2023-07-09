@@ -21,9 +21,9 @@ class WeatherModel {
   final double precipIn;
   final int humidity;
   final int cloud;
-  final double feelslikeC;
+  final int feelslikeC;
   final double feelslikeF;
-  final double visKm;
+  final int visKm;
   final double visMiles;
   final double uv;
   final double gustMph;
@@ -82,9 +82,9 @@ class WeatherModel {
       precipIn: current['precip_in'],
       humidity: current['humidity'],
       cloud: current['cloud'],
-      feelslikeC: current['feelslike_c'],
+      feelslikeC: current['feelslike_c'].round(),
       feelslikeF: current['feelslike_f'],
-      visKm: current['vis_km'],
+      visKm: current['vis_km'].round(),
       visMiles: current['vis_miles'],
       uv: current['uv'],
       gustMph: current['gust_mph'],
