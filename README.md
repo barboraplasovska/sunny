@@ -1,8 +1,8 @@
 # Sunny ☀️
 
 Sunny is a simple weather application. By default, it asks the user permission
-for his current location to show the Weather at his current position. The user can
-add other places and delete them as he likes.
+for their current location to show the Weather at their current position. The user can
+add other places and delete them as they likes.
 Features include hourly temperature for the next 24 hours, daily highest and
 lowest temperatures for the next 10 days, as well as feel like temperature,
 humidity, wind direction and speed and visibility.
