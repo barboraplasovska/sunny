@@ -44,11 +44,14 @@ class _LocationListPageState extends State<LocationListPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    currentLocation ? "My location" : model.location.name,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
+                  SizedBox(
+                    width: 200,
+                    child: Text(
+                      currentLocation ? "My location" : model.location.name,
+                      style: TextStyle(
+                        fontSize: model.location.name.length >= 20 ? 16 : 22,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   currentLocation

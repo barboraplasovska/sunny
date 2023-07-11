@@ -96,17 +96,22 @@ class _WeatherDetailState extends State<WeatherDetail> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 250.0,
+            expandedHeight: 280.0,
             backgroundColor: Theme.of(context).colorScheme.background,
             flexibleSpace: FlexibleSpaceBar(
               background: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 90),
+                    padding:
+                        const EdgeInsets.only(top: 90, left: 10, right: 10),
                     child: Text(
                       location.name,
-                      style: const TextStyle(fontSize: 30),
+                      style: TextStyle(
+                        fontSize: location.name.length >= 20 ? 25 : 30,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   Text(
